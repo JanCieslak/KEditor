@@ -7,7 +7,7 @@ import jterm.gfx.textures.TextTexture
 
 class ShellArea(textTexture: TextTexture) {
     private val caretLayer = CaretLayer()
-    private val textLayer = TextLayer(textTexture)
+    private val textLayer = TextLayer(caretLayer, textTexture)
     private val layers: List<AbstractLayer> = listOf(textLayer, caretLayer)
 
     fun update() {

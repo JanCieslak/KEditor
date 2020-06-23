@@ -13,7 +13,7 @@ import org.lwjgl.glfw.GLFWWindowFocusCallback
 import org.lwjgl.opengl.GL30C.*
 
 class CaretLayer : AbstractLayer() {
-    private val modelMatrix = Matrix4f()
+    val modelMatrix = Matrix4f()
 
     private val caretMaxAlpha = 0.6f
     private val caretColor = Vector4f(1.0f, 0.79f, 0.54f, caretMaxAlpha)
@@ -75,6 +75,14 @@ class CaretLayer : AbstractLayer() {
             moveCaret(0.0f, -caretHeight)
         if (Input.isKeyJustPressed(GLFW_KEY_DOWN))
             moveCaret(0.0f, caretHeight)
+//        if (Input.isKeyPressed(GLFW_KEY_RIGHT))
+//            moveCaret(caretWidth, 0.0f)
+//        if (Input.isKeyPressed(GLFW_KEY_LEFT))
+//            moveCaret(-caretWidth, 0.0f)
+//        if (Input.isKeyPressed(GLFW_KEY_UP))
+//            moveCaret(0.0f, -caretHeight)
+//        if (Input.isKeyPressed(GLFW_KEY_DOWN))
+//            moveCaret(0.0f, caretHeight)
 
         caretShader.unbind()
     }
