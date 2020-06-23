@@ -2,9 +2,17 @@ package jterm.gfx
 
 import jterm.gfx.layers.AbstractLayer
 import jterm.gfx.layers.CaretLayer
+import jterm.gfx.layers.TextLayer
+import jterm.gfx.textures.TextTexture
 
-class ShellArea {
-    private val layers: List<AbstractLayer> = listOf(CaretLayer())
+class ShellArea(textTexture: TextTexture) {
+    private val caretLayer = CaretLayer()
+    private val textLayer = TextLayer(textTexture)
+    private val layers: List<AbstractLayer> = listOf(textLayer, caretLayer)
+
+    fun update() {
+
+    }
 
     fun render() {
         for (layer in layers) {

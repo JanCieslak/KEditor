@@ -5,15 +5,18 @@ import KTerm.CELL_WIDTH
 import jterm.gfx.shaders.CaretShader
 import jterm.utils.Input
 import jterm.utils.Time
+import jterm.utils.Window
 import org.joml.Matrix4f
 import org.joml.Vector4f
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.glfw.GLFWWindowFocusCallback
 import org.lwjgl.opengl.GL30C.*
 
 class CaretLayer : AbstractLayer() {
     private val modelMatrix = Matrix4f()
 
-    private val caretColor = Vector4f(1.0f, 0.0f, 1.0f, 1.0f)
+    private val caretMaxAlpha = 0.6f
+    private val caretColor = Vector4f(1.0f, 0.79f, 0.54f, caretMaxAlpha)
     private val caretShader = CaretShader()
 
     private val caretWidth = CELL_WIDTH.toFloat()
@@ -33,29 +36,36 @@ class CaretLayer : AbstractLayer() {
 
     private var alpha = 1.0f
     private var blinkingIncrease = false
-    private val BLINKING_SPEED = 2.0f
+    private val blinkingSpeed = 2.0f
+    private var shouldBlink = true;
+
+    init {
+        GLFWWindowFocusCallback.create { _, focused ->
+            shouldBlink = focused
+        }.set(Window.windowID)
+    }
 
     override fun update() {
         // todo blinking
         caretShader.bind()
 
-        // blinking
-        if (alpha >= 1.0f) {
-            blinkingIncrease = false
-            caretColor.w = 1.0f
+        if (shouldBlink) {
+            // blinking
+            if (alpha >= 1.0f) {
+                blinkingIncrease = false
+                caretColor.w = caretMaxAlpha
+            } else if (alpha <= 0.0f) {
+                blinkingIncrease = true
+                caretColor.w = 0.0f
+            }
+
+            if (blinkingIncrease)
+                alpha += blinkingSpeed * Time.deltaTime.toFloat()
+            else
+                alpha -= blinkingSpeed * Time.deltaTime.toFloat()
+
+            caretShader.loadVector4f("color", caretColor)
         }
-        else if (alpha <= 0.0f) {
-            blinkingIncrease = true
-            caretColor.w = 0.0f
-        }
-
-        if (blinkingIncrease)
-            alpha += BLINKING_SPEED * Time.deltaTime.toFloat()
-        else
-            alpha -= BLINKING_SPEED * Time.deltaTime.toFloat()
-
-
-        caretShader.loadVector4f("color", caretColor)
 
         if (Input.isKeyJustPressed(GLFW_KEY_RIGHT))
             moveCaret(caretWidth, 0.0f)
