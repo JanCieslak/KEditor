@@ -24,27 +24,45 @@ class TextLayer(private val caret: CaretLayer, private val textTexture: TextText
     private var lines = ArrayList<String>()
 
     init {
-        val initialLines = Window.height / KTerm.CELL_HEIGHT
-        for (i in 0..initialLines.toInt())
-            lines.add("")
-
+        lines.add("")
+//        val initialLines = Window.height / KTerm.CELL_HEIGHT
+//        for (i in 0..initialLines.toInt())
+//            lines.add("")
 
         GLFWKeyCallback.create { window, key, scancode, action, mods ->
-            val caretX = (caret.modelMatrix.m30() / KTerm.CELL_WIDTH).toInt()
-            val caretY = (caret.modelMatrix.m31() / KTerm.CELL_HEIGHT).toInt()
+            val caretX = (caret.modelMatrix.m30() / KEditor.CELL_WIDTH).toInt()
+            val caretY = (caret.modelMatrix.m31() / KEditor.CELL_HEIGHT).toInt()
 
             fun insert(letter: String) {
+                // add lines
                 while (caretY >= lines.size)
                     lines.add("")
 
+                // add spaces
+                while (caretX >= lines[caretY].length)
+                    lines[caretY] += " "
+
                 if (GLFW_MOD_SHIFT and mods > 0)
-                    lines[caretY] += letter.toUpperCase()
+                    lines[caretY] = lines[caretY].substring(0, caretX) + letter.toUpperCase() + lines[caretY].substring(caretX, lines[caretY].length)
                 else
-                    lines[caretY] += letter
+                    lines[caretY] = lines[caretY].substring(0, caretX) + letter + lines[caretY].substring(caretX, lines[caretY].length)
+
+                caret.caretShader.bind()
+                caret.moveCaret(caret.caretWidth, 0.0f)
+                caret.caretShader.unbind()
             }
 
             if (action == GLFW_PRESS) {
                 when (key) {
+                    GLFW_KEY_0 -> if (shiftPressed(mods)) insert(")")
+                    GLFW_KEY_1 -> if (shiftPressed(mods)) insert("!") else insert("1")
+                    GLFW_KEY_9 -> if (shiftPressed(mods)) insert("(")
+                    GLFW_KEY_LEFT_BRACKET -> if (shiftPressed(mods)) insert("{") else insert("[")
+                    GLFW_KEY_RIGHT_BRACKET -> if (shiftPressed(mods)) insert("}") else insert("]")
+                    GLFW_KEY_APOSTROPHE -> if (shiftPressed(mods)) insert("\"") else insert("\'")
+                    GLFW_KEY_COMMA -> insert(",")
+                    GLFW_KEY_PERIOD -> insert(".")
+                    GLFW_KEY_SEMICOLON -> if (shiftPressed(mods)) insert(":") else insert(";")
                     GLFW_KEY_A -> insert("a")
                     GLFW_KEY_B -> insert("b")
                     GLFW_KEY_C -> insert("c")
@@ -72,11 +90,23 @@ class TextLayer(private val caret: CaretLayer, private val textTexture: TextText
                     GLFW_KEY_Y -> insert("y")
                     GLFW_KEY_Z -> insert("z")
                     GLFW_KEY_SPACE -> insert(" ")
-                    GLFW_KEY_BACKSPACE -> if (lines.isNotEmpty()) {
-                        lines[caretY] = lines[caretY].substring(0, lines[caretY].length - 1)
+                    GLFW_KEY_ENTER -> {
+                        lines.add(caretY + 1, "")
+
+                        caret.caretShader.bind()
+                        caret.moveCaretTo(0.0f, (caretY + 1) * caret.caretHeight)
+                        caret.caretShader.unbind()
                     }
+                    GLFW_KEY_BACKSPACE ->
+                        if (lines[caretY].isNotEmpty() && caretX != 0) {
+                            lines[caretY] = lines[caretY].removeRange(caretX - 1, caretX)
+                            caret.caretShader.bind()
+                            caret.moveCaret(-caret.caretWidth, 0.0f)
+                            caret.caretShader.unbind()
+                        }
                 }
 
+                // could implement observable property
                 changed = true
             }
         }.set(Window.windowID)
@@ -87,13 +117,8 @@ class TextLayer(private val caret: CaretLayer, private val textTexture: TextText
             positions.clear()
             texCoords.clear()
 
-            val caretX = caret.modelMatrix.m30() / KTerm.CELL_WIDTH
-            val caretY = caret.modelMatrix.m31() / KTerm.CELL_HEIGHT
-
-            println("Caret position x:${caretX} y:${caretY}")
-            
             // set positions / texture coords
-            var i = 0.0f
+            var yOffset = 0
             for (line in lines) {
                 var xOffset = 0
 
@@ -104,44 +129,44 @@ class TextLayer(private val caret: CaretLayer, private val textTexture: TextText
 
                     // left-top
                     positions.add(0.0f + xOffset)
-                    positions.add((i * KTerm.CELL_HEIGHT))
+                    positions.add(0.0f + (yOffset * KEditor.CELL_HEIGHT))
                     texCoords.add(charStartX / textTexture.width.toFloat())
                     texCoords.add(0.0f)
 
                     // right-bottom
                     positions.add(0.0f + xOffset + charWidth)
-                    positions.add((i * KTerm.CELL_HEIGHT) + textTexture.height)
+                    positions.add(0.0f + (yOffset * KEditor.CELL_HEIGHT) + textTexture.height)
                     texCoords.add((charStartX + charWidth) / textTexture.width.toFloat())
                     texCoords.add(1.0f)
 
                     // left-bottom
                     positions.add(0.0f + xOffset)
-                    positions.add((i * KTerm.CELL_HEIGHT) + textTexture.height)
+                    positions.add(0.0f + (yOffset * KEditor.CELL_HEIGHT) + textTexture.height)
                     texCoords.add(charStartX / textTexture.width.toFloat())
                     texCoords.add(1.0f)
 
                     // left-top
                     positions.add(0.0f + xOffset)
-                    positions.add((i * KTerm.CELL_HEIGHT))
+                    positions.add(0.0f + (yOffset * KEditor.CELL_HEIGHT))
                     texCoords.add(charStartX / textTexture.width.toFloat())
                     texCoords.add(0.0f)
 
                     // right-bottom
                     positions.add(0.0f + xOffset + charWidth)
-                    positions.add((i * KTerm.CELL_HEIGHT) + textTexture.height)
+                    positions.add(0.0f + (yOffset * KEditor.CELL_HEIGHT) + textTexture.height)
                     texCoords.add((charStartX + charWidth) / textTexture.width.toFloat())
                     texCoords.add(1.0f)
 
                     // right-top
                     positions.add(0.0f + xOffset + charWidth)
-                    positions.add((i * KTerm.CELL_HEIGHT))
+                    positions.add(0.0f + (yOffset * KEditor.CELL_HEIGHT))
                     texCoords.add((charStartX + charWidth) / textTexture.width.toFloat())
                     texCoords.add(0.0f)
 
                     xOffset += charWidth
                 }
 
-                i += 1
+                yOffset += 1
             }
 
             // generate mesh
@@ -197,4 +222,6 @@ class TextLayer(private val caret: CaretLayer, private val textTexture: TextText
     override fun dispose() {
 
     }
+
+    private fun shiftPressed(mods: Int): Boolean = ((mods and GLFW_MOD_SHIFT) > 0)
 }

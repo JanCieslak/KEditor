@@ -13,7 +13,7 @@ import org.lwjgl.system.MemoryUtil
 
 object Window {
     var windowID: Long
-    var title = "KTerm"
+    var title = "KEditor"
     var width = 1200.0f
     var height = 700.0f
 

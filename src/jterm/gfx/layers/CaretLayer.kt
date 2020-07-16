@@ -1,7 +1,7 @@
 package jterm.gfx.layers
 
-import KTerm.CELL_HEIGHT
-import KTerm.CELL_WIDTH
+import KEditor.CELL_HEIGHT
+import KEditor.CELL_WIDTH
 import jterm.gfx.shaders.CaretShader
 import jterm.utils.Input
 import jterm.utils.Time
@@ -17,10 +17,10 @@ class CaretLayer : AbstractLayer() {
 
     private val caretMaxAlpha = 0.6f
     private val caretColor = Vector4f(1.0f, 0.79f, 0.54f, caretMaxAlpha)
-    private val caretShader = CaretShader()
+    val caretShader = CaretShader()
 
-    private val caretWidth = CELL_WIDTH.toFloat()
-    private val caretHeight = CELL_HEIGHT.toFloat()
+    val caretWidth = CELL_WIDTH.toFloat()
+    val caretHeight = CELL_HEIGHT.toFloat()
 
     private val vertices = floatArrayOf(
         // first triangle
@@ -46,7 +46,6 @@ class CaretLayer : AbstractLayer() {
     }
 
     override fun update() {
-        // todo blinking
         caretShader.bind()
 
         if (shouldBlink) {
@@ -116,7 +115,15 @@ class CaretLayer : AbstractLayer() {
         return vaoID
     }
 
-    private fun moveCaret(xOffset: Float, yOffset: Float) {
+    fun moveCaretTo(xPos: Float, yPos: Float) {
+        modelMatrix.identity()
+        caretShader.loadMatrix("model", modelMatrix.translate(xPos, yPos, 0.0f))
+        alpha = 1.0f
+        caretColor.w = 1.0f
+        blinkingIncrease = false
+    }
+
+    fun moveCaret(xOffset: Float, yOffset: Float) {
         caretShader.loadMatrix("model", modelMatrix.translate(xOffset, yOffset, 0.0f))
         alpha = 1.0f
         caretColor.w = 1.0f

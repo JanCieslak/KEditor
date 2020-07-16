@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11C.glClearColor
 import java.awt.Canvas
 import java.awt.Font
 
-object KTerm {
+object KEditor {
     private val DEFAULT_FONT = Font("Roboto Mono", Font.BOLD, 24)
     var CELL_WIDTH = 0
     var CELL_HEIGHT = 0
