@@ -1,6 +1,6 @@
-package jterm.gfx.shaders
+package keditor.gfx.shaders
 
-import jterm.utils.Window
+import keditor.utils.Window
 import org.joml.Matrix4f
 import org.joml.Vector3f
 

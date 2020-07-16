@@ -1,6 +1,6 @@
-package jterm.gfx.shaders
+package keditor.gfx.shaders
 
-import jterm.utils.Window
+import keditor.utils.Window
 import org.joml.Matrix4f
 
 class TextShader : AbstractShader("text/vertex", "text/fragment") {

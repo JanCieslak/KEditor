@@ -1,4 +1,4 @@
-package jterm.utils
+package keditor.utils
 
 import org.lwjgl.glfw.GLFW.GLFW_PRESS
 import org.lwjgl.glfw.GLFW.glfwGetKey

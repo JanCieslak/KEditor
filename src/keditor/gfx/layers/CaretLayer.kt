@@ -1,11 +1,11 @@
-package jterm.gfx.layers
+package keditor.gfx.layers
 
 import KEditor.CELL_HEIGHT
 import KEditor.CELL_WIDTH
-import jterm.gfx.shaders.CaretShader
-import jterm.utils.Input
-import jterm.utils.Time
-import jterm.utils.Window
+import keditor.gfx.shaders.CaretShader
+import keditor.utils.Input
+import keditor.utils.Time
+import keditor.utils.Window
 import org.joml.Matrix4f
 import org.joml.Vector4f
 import org.lwjgl.glfw.GLFW.*

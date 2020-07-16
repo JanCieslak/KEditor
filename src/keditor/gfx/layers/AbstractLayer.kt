@@ -1,4 +1,4 @@
-package jterm.gfx.layers
+package keditor.gfx.layers
 
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL15C.*

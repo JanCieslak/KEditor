@@ -1,8 +1,8 @@
-package jterm.gfx.layers
+package keditor.gfx.layers
 
-import jterm.gfx.shaders.TextShader
-import jterm.gfx.textures.TextTexture
-import jterm.utils.Window
+import keditor.gfx.shaders.TextShader
+import keditor.gfx.textures.TextTexture
+import keditor.utils.Window
 import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWKeyCallback

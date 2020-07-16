@@ -1,8 +1,7 @@
-import jterm.gfx.ShellArea
-import jterm.gfx.textures.TextTexture
-import jterm.utils.Window
-import jterm.utils.Time
-import org.lwjgl.opengl.GL11.*
+import keditor.gfx.ShellArea
+import keditor.gfx.textures.TextTexture
+import keditor.utils.Window
+import keditor.utils.Time
 import org.lwjgl.opengl.GL11C.glClearColor
 import java.awt.Canvas
 import java.awt.Font

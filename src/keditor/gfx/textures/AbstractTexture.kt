@@ -1,4 +1,4 @@
-package jterm.gfx.textures
+package keditor.gfx.textures
 
 import org.lwjgl.opengl.GL11C.*
 import org.lwjgl.stb.STBImage.stbi_load

@@ -1,9 +1,9 @@
-package jterm.gfx
+package keditor.gfx
 
-import jterm.gfx.layers.AbstractLayer
-import jterm.gfx.layers.CaretLayer
-import jterm.gfx.layers.TextLayer
-import jterm.gfx.textures.TextTexture
+import keditor.gfx.layers.AbstractLayer
+import keditor.gfx.layers.CaretLayer
+import keditor.gfx.layers.TextLayer
+import keditor.gfx.textures.TextTexture
 
 class ShellArea(textTexture: TextTexture) {
     private val caretLayer = CaretLayer()

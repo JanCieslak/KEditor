@@ -1,4 +1,4 @@
-package jterm.gfx.textures
+package keditor.gfx.textures
 
 import java.awt.Color
 import java.awt.Font
